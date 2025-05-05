@@ -59,12 +59,3 @@ Aplikasi ini dikembangkan untuk:
 - Update profil wali murid
 
 ---
-
-## 🚀 Cara Menjalankan Aplikasi
-
-### 1. Clone Repositori
-
-```bash
-git clone https://github.com/YOUR-USERNAME/yayasan-alhusna-spp.git
-cd yayasan-alhusna-spp
-```
