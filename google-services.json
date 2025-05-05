@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "269030214590",
+    "project_id": "husnaedupay-96597",
+    "storage_bucket": "husnaedupay-96597.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269030214590:android:c0cb1b35bbfdfe517d47ef",
+        "android_client_info": {
+          "package_name": "com.husnaedupay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy0qXZ2EZseCn6XDcPe_Iu0Zyk3ZEuH2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

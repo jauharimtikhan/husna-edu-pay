@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "husnaedupay-96597",
+  "private_key_id": "9c6c031dea2a0d958d570d80c217498363f170d2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDLYWnox8pgPEQ5\nyNN0l1TDwMaAaIFm1caclH4qW3zO3AqVe1+IhfsxVlmRg+YsC+fsaBHgTgcONpyP\nxukIFTyDAR6mqRCBgxJmwUbqkFOQqxSU32zckrTmcHY76JLq1wPox9dUWIZZcPEh\nOxfFZH7BtSLjtsHAsaVsUXYAx0qhQYO4NqtlKvfUi7zRUCdGg8WJcMCsFV5IBRTo\n7Japhg+8hqWHihJQJi2CZhOUbu4GRQMjO5kA/qi/96UaH10bGvdsISqecdN2TYvx\njfXMYoQlxyumHI8ofquNpiLXBocxglXmfo31aVYuDeeSL0CZJ9rYna+jzXG78aZT\nZV5ZYGtRAgMBAAECggEACnfBdNvYopajf9JicM8rq5Yf2WLXmzCAVBWP/1PdYwPA\nDzTOBFe6B65tNoBCj+yOc7RhDCmT8yM0MHHBU3tNVaRQfK05tmLFxxBmWyMRzAHE\nMcvknV83LJ+n9Doqmqf1sWzcvECArLiTjp1tIimjnQp6yNvikc2K6T3xnAVl5dIC\n/BlnEEKFTcQxO938MuoLDjcDNbTRkY2GwZt/VU/epxWDhdw1vtgFZsTjx/LURQHU\nwmXKCuU/nP4bpO8Qk6WTBZY1qf42Vm61D76J+Hj4QiEG/kHduayNRgBfa3OgOTUz\nVv2QN0wXptC00bNc0Hi5Ysg8aDcD0IC3dcke0AP5wQKBgQD2RCjlZoo3hKJfREZQ\nx9HUxAUNxI6L6bpLm7hiH84nTiqKMrahCxbf4Avr3viMAt4uubpy083A0qcseUgR\nifgq7R0Xw/3IAbufwbL+VHgXhUyzSYCViONrj1Bh9TntG1PeGDtTs0bz+LiCweem\nzVmYZuB6dxus1iX/IpHdUWhhsQKBgQDTa1DI86BbgMwPkyZ2wLRaOaz5MbEheobo\nrHDvNrjs+o+04k2dQ+aw2mMlDioow4AyMLaN+d1WJQ+IkoTkd8QxkLXJ9fIghiBn\nk0dCt2pCf4mmMItkwRojpwu3H76HfHuhLpHp+4eLdEn4lhfX49ea9vY33PH5Jjoo\nV9uqJ8ZroQKBgQCPSZFSCJubOf0P2TXggqNAXN1j6V3XYqMWowBhd4gHrp9p0aAZ\ni84/bKkDELUlIfYM0dv+O+aXrvm+EsMwEUroDxbCYTMkUH3OsnFnMda+OL0sBDRg\nzUklqDlpBboyj5f4vbinNsSt56XTzubuUsUyu4kZOHxN0DxDeuXMFDXbwQKBgEs7\nf/bSQvjsvzC3o1NUxZjptzTByw9nw4QegN2O8oVZsDOk6AuTcw7x16ADB1uUHhU+\nImgpRur1qy5lPSbzu3wLy7S/cVbDg9p3nT8Pd5+MNNZPpfrHgF65fcC/ahRaZr/3\ni3Lgz93/Fqd/+aIYcMuzH/DHDdAkG0Pp58AIAWKhAoGBAK10A0uKAu0kG++9jnYB\nOnILLdXMG6DuR/xwD5507cAR19zEbwEAmYWV3/Wi19P07HX+f1q0pBUAQdChGuoK\nleGV3/W4L+rvBtCTj7cS/3e3vocYcGb+30YZb8vyc+fbrqBLZwOCbUZSNU1VkO+r\nEocaYxzCF75ljHzaOvVXQmuu\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@husnaedupay-96597.iam.gserviceaccount.com",
+  "client_id": "102409494653516290428",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40husnaedupay-96597.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

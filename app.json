@@ -1,21 +1,30 @@
 {
   "expo": {
-    "name": "TA-FAIZAL",
-    "slug": "TA-FAIZAL",
+    "name": "Husna EduPay",
+    "slug": "husna-edupay",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "husnaedupay",
+    "deepLinks": ["husnaedupay://callback-gopay"],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.husnaedupay",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.husnaedupay",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
+      "permissions": ["android.permission.READ_PHONE_STATE"]
     },
     "web": {
       "bundler": "metro",
@@ -32,10 +41,40 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#FFFFFF",
+          "defaultChannel": "default",
+          "enableBackgroundRemoteNotifications": true
+        }
+      ],
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "896baf6e-3a94-4747-89e0-1e955a9c7c33"
+      }
+    },
+    "owner": "husnaedupay",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/896baf6e-3a94-4747-89e0-1e955a9c7c33"
     }
   }
 }
