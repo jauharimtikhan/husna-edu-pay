@@ -1,10 +1,22 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, FlatList } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/constants/color";
 import HeaderHomeScreen from "@/components/HeaderHomeScreen";
+import useFetch from "@/hooks/useFetch";
+import { api } from "@/utils/axios";
+import formatIndonesianDate from "@/utils/formatDate";
+import numberFormat from "@/utils/numberFormat";
 
 const history = () => {
+  const {
+    data,
+    loading,
+    refect: refetch,
+  } = useFetch(async () => {
+    const res = await api.get("/transactions/history");
+    return res.data?.data;
+  });
   return (
     <SafeAreaView
       style={{
@@ -20,21 +32,26 @@ const history = () => {
           paddingHorizontal: 16,
         }}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
+        <FlatList
+          data={data}
           style={{
-            flex: 1,
-            paddingBottom: 24,
-            backgroundColor: colors.white,
+            paddingBottom: 16,
           }}
           contentContainerStyle={{
-            gap: 16,
+            marginBottom: 16,
+            gap: 10,
           }}
-        >
-          {Array.from({ length: 10 }).map((_, index) => (
-            <HistoryComponent key={index} />
-          ))}
-        </ScrollView>
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <HistoryComponent
+              transaction_id={item.transaction_id}
+              status={item.status}
+              created_at={item.created_at}
+              amount={item.amount}
+            />
+          )}
+        />
       </View>
     </SafeAreaView>
   );
@@ -42,7 +59,18 @@ const history = () => {
 
 export default history;
 
-const HistoryComponent = () => {
+interface HistoryComponentProps {
+  created_at: string;
+  transaction_id: string;
+  status: string;
+  amount: string;
+}
+const HistoryComponent = ({
+  transaction_id,
+  amount,
+  created_at,
+  status,
+}: HistoryComponentProps) => {
   return (
     <View>
       <Text
@@ -54,7 +82,7 @@ const HistoryComponent = () => {
           textTransform: "capitalize",
         }}
       >
-        Rabu, 15 Jan 2025
+        {formatIndonesianDate(created_at).tgl}
       </Text>
       <View
         style={{
@@ -80,19 +108,31 @@ const HistoryComponent = () => {
               textTransform: "capitalize",
             }}
           >
-            Pembayaran SPP
+            {transaction_id.toUpperCase()}
           </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "600",
-              color: colors.black,
-              textTransform: "capitalize",
-              marginRight: 24,
-            }}
-          >
-            Rp. 400.000,-
-          </Text>
+          <View>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "600",
+                color: colors.black,
+                textTransform: "capitalize",
+                marginRight: 24,
+              }}
+            >
+              {numberFormat(Number(amount))},-
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "400",
+                color: colors.black,
+                marginRight: 24,
+              }}
+            >
+              {status}
+            </Text>
+          </View>
         </View>
         <Text
           style={{
@@ -102,7 +142,7 @@ const HistoryComponent = () => {
             textTransform: "capitalize",
           }}
         >
-          12.35 WIB
+          {formatIndonesianDate(created_at).wkt}
         </Text>
       </View>
     </View>
