@@ -147,16 +147,21 @@ const Pending = () => {
                 </Text>
                 {params?.va_numbers?.[0]?.bank ? (
                   <Image
-                    source={{
-                      uri: bankImage[
-                        (params?.va_numbers?.[0]
-                          ?.bank as keyof typeof bankImage) && "mandiri"
-                      ],
-                    }}
+                    source={
+                      params?.va_numbers?.[0]?.bank &&
+                      bankImage[
+                        params.va_numbers[0].bank as keyof typeof bankImage
+                      ]
+                        ? bankImage[
+                            params.va_numbers[0].bank as keyof typeof bankImage
+                          ]
+                        : require("@/assets/images/icons/bank/midtrans_logo.png")
+                    }
                     style={{
                       width: 64,
                       height: 20,
                     }}
+                    resizeMode="contain"
                   />
                 ) : (
                   <Image
@@ -181,7 +186,7 @@ const Pending = () => {
                 Virtual Account
               </Text>
               <VirtualAccount
-                expiry={params?.expiry_time}
+                expiry={params.expiry_time}
                 number={
                   params?.va_numbers?.[0]?.va_number ||
                   params?.permata_va_number
@@ -206,9 +211,12 @@ const Pending = () => {
                   {String(params?.store).toUpperCase()}
                 </Text>
                 <Image
-                  source={{
-                    uri: cStoreImage[params?.store as keyof typeof cStoreImage],
-                  }}
+                  source={
+                    params?.va_numbers?.[0]?.bank &&
+                    cStoreImage[params.store as keyof typeof cStoreImage]
+                      ? cStoreImage[params.store as keyof typeof cStoreImage]
+                      : require("@/assets/images/icons/bank/midtrans_logo.png")
+                  }
                   style={{
                     width: 64,
                     height: 20,
@@ -226,20 +234,17 @@ const Pending = () => {
                 {String(params?.store).toUpperCase()}
               </Text>
               <VirtualAccount
-                expiry={params?.expiry_time}
+                expiry={params.expiry_time}
                 number={params?.payment_code}
               />
             </>
           ) : null}
-          {params?.transaction_type in
-          Array(3).fill(["qris", "gopay", "shopeepay"]) ? (
-            <>
-              <QrisPayment
-                expiry={params.expiry_time}
-                qrString="jaskdjasasd"
-                data={params?.qr_string}
-              />
-            </>
+          {["qris", "gopay", "shopeepay"].includes(params?.transaction_type) ? (
+            <QrisPayment
+              expiry={params.expiry_time}
+              qrString="jaskdjasasd"
+              data={params?.qr_string}
+            />
           ) : null}
 
           <View
