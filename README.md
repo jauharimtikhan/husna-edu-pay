@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# 📱 Aplikasi Pembayaran SPP – Yayasan Al Husna
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Selamat datang di repository resmi aplikasi mobile **Pembayaran SPP** untuk **Yayasan Al Husna**. Aplikasi ini bertujuan untuk mempermudah orang tua/wali murid dalam melakukan **pembayaran SPP secara digital**, aman, dan terintegrasi langsung dengan sistem yayasan.
 
-## Get started
+---
 
-1. Install dependencies
+## 🎯 Tujuan Proyek
 
-   ```bash
-   npm install
-   ```
+Aplikasi ini dikembangkan untuk:
 
-2. Start the app
+- Mempermudah proses pembayaran SPP secara online.
+- Menyediakan riwayat pembayaran lengkap dan transparan.
+- Memberikan notifikasi pengingat saat jatuh tempo pembayaran.
+- Meningkatkan efisiensi dan akurasi pencatatan administrasi keuangan yayasan.
 
-   ```bash
-    npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🛠️ Teknologi yang Digunakan
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+| Teknologi                     | Deskripsi                                             |
+| ----------------------------- | ----------------------------------------------------- |
+| **React Native**              | Framework utama untuk pengembangan aplikasi mobile.   |
+| **Expo**                      | Toolchain untuk pengembangan dan deployment aplikasi. |
+| **TypeScript**                | Bahasa pemrograman untuk keamanan dan skalabilitas.   |
+| **React Navigation**          | Navigasi antar layar di dalam aplikasi.               |
+| **Axios**                     | HTTP client untuk komunikasi dengan backend API.      |
+| **Push Notifications (Expo)** | Untuk pengingat pembayaran SPP.                       |
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 📦 Fitur Aplikasi
 
-When you're ready, run:
+### 👨‍👩‍👧 Dashboard Orang Tua/Wali
+
+- Melihat nama siswa yang diasuh
+- Status pembayaran per bulan
+- Jumlah tagihan yang harus dibayar
+
+### 💳 Pembayaran Online
+
+- Pembayaran SPP dengan berbagai metode (VA, e-wallet, dsb)
+- Konfirmasi pembayaran otomatis/manual
+- Upload bukti pembayaran (jika manual)
+
+### 📅 Riwayat Pembayaran
+
+- Daftar transaksi yang sudah dilakukan
+- Status: Lunas, Tertunda, Gagal
+
+### 🔔 Notifikasi
+
+- Pengingat jatuh tempo pembayaran
+- Notifikasi sukses/gagal pembayaran
+- Informasi penting dari yayasan
+
+### ⚙️ Pengaturan Akun
+
+- Ganti password
+- Update profil wali murid
+
+---
+
+## 🚀 Cara Menjalankan Aplikasi
+
+### 1. Clone Repositori
 
 ```bash
-npm run reset-project
+git clone https://github.com/YOUR-USERNAME/yayasan-alhusna-spp.git
+cd yayasan-alhusna-spp
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
