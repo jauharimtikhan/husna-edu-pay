@@ -49,7 +49,7 @@ const login = () => {
         );
         router.replace("/(home)" as Href);
       } else {
-        console.log(res.data);
+        // console.log(res.data);
       }
     },
   });

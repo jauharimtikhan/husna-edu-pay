@@ -97,7 +97,7 @@ const ModalPopUpPayment = ({ visible, onClose, nominal }: Props) => {
           transaction_type: params.transactionType,
         };
       }
-      console.log("Charging with:", trData);
+      // console.log("Charging with:", trData);
 
       const res = await api.post("/transactions/charge", trData);
       return res.data?.data;
@@ -137,7 +137,7 @@ const ModalPopUpPayment = ({ visible, onClose, nominal }: Props) => {
 
     setIsRequesting(false);
   };
-  console.log(chargeData);
+  // console.log(chargeData);
 
   const renderBankList = () => (
     <View style={{ paddingHorizontal: 10 }}>

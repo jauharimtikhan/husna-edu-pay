@@ -13,12 +13,13 @@ export default function VirtualAccount({
   number,
   expiry,
 }: {
-  number: string;
-  expiry: string; // ubah ke string karena datangnya dalam bentuk "2025-05-02 03:09:37"
+  number?: string;
+  expiry?: string; // ubah ke string karena datangnya dalam bentuk "2025-05-02 03:09:37"
 }) {
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
   useEffect(() => {
+    if (!expiry) return;
     const target = new Date(expiry).getTime(); // ubah string ke timestamp (ms)
     const updateTimeLeft = () => {
       const now = new Date().getTime();
@@ -45,11 +46,13 @@ export default function VirtualAccount({
   };
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(number);
-    ToastAndroid.show(
-      "No VA Berhasil Disalin ke Clipboard",
-      ToastAndroid.SHORT
-    );
+    if (number) {
+      await Clipboard.setStringAsync(number);
+      ToastAndroid.show(
+        "No VA Berhasil Disalin ke Clipboard",
+        ToastAndroid.SHORT
+      );
+    }
   };
 
   return (

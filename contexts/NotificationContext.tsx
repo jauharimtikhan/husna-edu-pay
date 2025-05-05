@@ -47,13 +47,13 @@ export const NotificationProvider = ({
           setDataPayment(data);
         }
         setLastNotification(notification);
-        console.log(" Notifikasi data", notification);
+        // console.log(" Notifikasi data", notification);
       });
 
     // Handle tapped notification
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("User clicked notif:", response.notification);
+        // console.log("User clicked notif:", response.notification);
         router.push({
           pathname: "/(payment)/status",
           params: {

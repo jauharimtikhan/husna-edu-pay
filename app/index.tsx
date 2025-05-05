@@ -45,7 +45,7 @@ export default function Index() {
     return <Redirect href={isLoggedIn ? "/(home)" : "/(auth)/login"} />;
   }
   if (!isInternetReachable && isInternetReachable !== undefined) {
-    console.log("No internet connection");
+    // console.log("No internet connection");
     return (
       <SafeAreaView
         style={{

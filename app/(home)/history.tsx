@@ -1,5 +1,12 @@
-import { View, Text, ScrollView, FlatList } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
+import React, { useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/constants/color";
 import HeaderHomeScreen from "@/components/HeaderHomeScreen";
@@ -7,8 +14,11 @@ import useFetch from "@/hooks/useFetch";
 import { api } from "@/utils/axios";
 import formatIndonesianDate from "@/utils/formatDate";
 import numberFormat from "@/utils/numberFormat";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const history = () => {
+  const [refresh, setRefresh] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
   const {
     data,
     loading,
@@ -17,6 +27,19 @@ const history = () => {
     const res = await api.get("/transactions/history");
     return res.data?.data;
   });
+
+  const handleRefresh = async () => {
+    setRefresh(true);
+    await refetch();
+    setRefresh(false);
+  };
+
+  const handleBackToTop = () => {
+    flatListRef.current?.scrollToOffset({
+      offset: 0,
+      animated: true,
+    });
+  };
   return (
     <SafeAreaView
       style={{
@@ -30,28 +53,58 @@ const history = () => {
           flex: 1,
           marginTop: 40,
           paddingHorizontal: 16,
+          position: "relative",
         }}
       >
-        <FlatList
-          data={data}
+        {loading ? (
+          <ActivityIndicator size="large" color={colors.blue} />
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+            data={data}
+            style={{
+              paddingBottom: 16,
+            }}
+            contentContainerStyle={{
+              marginBottom: 16,
+              gap: 10,
+            }}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <HistoryComponent
+                transaction_id={item.transaction_id}
+                status={item.status}
+                created_at={item.created_at}
+                amount={item.amount}
+              />
+            )}
+          />
+        )}
+        <View
           style={{
-            paddingBottom: 16,
+            position: "absolute",
+            bottom: 25,
+            right: 35,
           }}
-          contentContainerStyle={{
-            marginBottom: 16,
-            gap: 10,
-          }}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <HistoryComponent
-              transaction_id={item.transaction_id}
-              status={item.status}
-              created_at={item.created_at}
-              amount={item.amount}
-            />
-          )}
-        />
+        >
+          <TouchableOpacity
+            onPress={handleBackToTop}
+            style={{
+              backgroundColor: colors.blue,
+              width: 50,
+              height: 50,
+              borderRadius: 80,
+              justifyContent: "center",
+              alignItems: "center",
+              elevation: 4,
+            }}
+          >
+            <AntDesign name="up" size={25} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

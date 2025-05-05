@@ -10,7 +10,7 @@ export default function QrisPayment({
 }: {
   qrString: string;
   expiry: string;
-  data: any;
+  data?: any;
 }) {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const openDeepLink = async () => {
@@ -79,7 +79,7 @@ export default function QrisPayment({
             fontSize: 14,
           }}
         >
-          Pay before: {formatTime(timeLeft)}
+          Bayar Sebelum: {formatTime(timeLeft)}
         </Text>
       </View>
     </View>

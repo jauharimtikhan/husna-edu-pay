@@ -18,10 +18,11 @@ import QrisPayment from "@/components/QrisPayment";
 import { api } from "@/utils/axios";
 import { bankImage, cStoreImage } from "@/constants/bankLists";
 import numberFormat from "@/utils/numberFormat";
+import { MidtransPaymentResponse } from "@/types/midtrans-response";
 
 const Settlement = () => {
   const { data } = useLocalSearchParams();
-  const [params, setParams] = useState<any>(null);
+  const [params, setParams] = useState<MidtransPaymentResponse | null>(null);
   const [loadingCek, setLoadingCek] = useState(false);
 
   const handleCekStatus = async () => {
@@ -42,7 +43,7 @@ const Settlement = () => {
 
   useEffect(() => {
     if (data) {
-      const param = JSON.parse(data as string);
+      const param: MidtransPaymentResponse = JSON.parse(data as string);
       setParams(param);
     }
   }, [data]);
@@ -132,8 +133,9 @@ const Settlement = () => {
                     fontSize: 18,
                   }}
                 >
-                  {String(params?.va_numbers?.[0]?.bank).toUpperCase() ??
-                    "Mandiri"}
+                  {params?.va_numbers?.[0]?.bank
+                    ? String(params.va_numbers[0].bank).toUpperCase()
+                    : "Mandiri"}
                 </Text>
                 {params?.va_numbers?.[0]?.bank ? (
                   <Image
@@ -171,8 +173,9 @@ const Settlement = () => {
                   marginBottom: 8,
                 }}
               >
-                {String(params?.va_numbers?.[0]?.bank).toUpperCase() ??
-                  "Mandiri"}{" "}
+                {params?.va_numbers?.[0]?.bank
+                  ? String(params.va_numbers[0].bank).toUpperCase()
+                  : "Mandiri"}{" "}
                 Virtual Account
               </Text>
               <VirtualAccount
@@ -202,7 +205,7 @@ const Settlement = () => {
                 </Text>
                 <Image
                   source={
-                    params?.va_numbers?.[0]?.bank &&
+                    params?.store &&
                     cStoreImage[params.store as keyof typeof cStoreImage]
                       ? cStoreImage[params.store as keyof typeof cStoreImage]
                       : require("@/assets/images/icons/bank/midtrans_logo.png")
@@ -211,6 +214,7 @@ const Settlement = () => {
                     width: 64,
                     height: 20,
                   }}
+                  resizeMode="contain"
                 />
               </View>
               <Text
@@ -221,21 +225,34 @@ const Settlement = () => {
                   marginBottom: 8,
                 }}
               >
-                {String(params?.store).toUpperCase()}
+                {params.store && String(params?.store).toUpperCase()}
               </Text>
               <VirtualAccount
-                expiry={params?.settlement_time}
-                number={params?.payment_code}
+                expiry={new Date().toDateString()}
+                number={params.payment_code && params.payment_code}
               />
             </>
           ) : null}
-          {["qris", "gopay", "shopeepay"].includes(params?.transaction_type) ? (
-            <QrisPayment
-              expiry={params.expiry_time}
-              qrString="jaskdjasasd"
-              data={params?.qr_string}
-            />
-          ) : null}
+          {params &&
+            ["qris", "gopay", "shopeepay"].includes(params.payment_type) && (
+              <QrisPayment
+                expiry={new Date().toISOString()}
+                qrString={
+                  "actions" in params && Array.isArray(params.actions)
+                    ? params.payment_type === "qris"
+                      ? params.actions.find(
+                          (a) => a.name === "generate-qr-code"
+                        )?.url ?? "settlement"
+                      : ["gopay", "shopeepay"].includes(params.payment_type)
+                      ? params.actions.find(
+                          (a) => a.name === "deeplink-redirect"
+                        )?.url ?? "settlement"
+                      : "settlement"
+                    : "settlement"
+                }
+                data={params}
+              />
+            )}
 
           <View
             style={{

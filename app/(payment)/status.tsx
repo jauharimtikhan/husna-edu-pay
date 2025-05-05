@@ -8,7 +8,7 @@ const StatusScreen = () => {
     if (!data) return;
 
     const params = JSON.parse(data as string);
-    console.log("PARAM STATUS:", params);
+    // console.log("PARAM STATUS:", params);
 
     if (params?.transaction_status === "pending") {
       router.replace({

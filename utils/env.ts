@@ -1,5 +1,5 @@
 export const ENV = {
-  API_BASE_URL: "https://local.jtech.my.id/api/v1",
+  API_BASE_URL: "https://lokal.jtech.my.id/api/v1",
 };
 
 export const STORAGE_VAR = {

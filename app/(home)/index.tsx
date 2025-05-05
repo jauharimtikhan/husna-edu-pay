@@ -22,7 +22,7 @@ const index = () => {
     const token = await AsyncStorage.getItem(STORAGE_VAR.token);
     const user = await AsyncStorage.getItem(STORAGE_VAR.user);
     Notifications.addPushTokenListener((notification) => {
-      console.log("Expo Token:", notification);
+      // console.log("Expo Token:", notification);
     });
     if (!token && !user) {
       router.replace("/(auth)/login" as Href);
