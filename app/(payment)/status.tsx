@@ -8,7 +8,14 @@ const StatusScreen = () => {
     if (!data) return;
 
     const params = JSON.parse(data as string);
-    // console.log("PARAM STATUS:", params);
+    const { status_code, gross_amount, order_id, transaction_status } = params;
+
+    const redirectParams = {
+      kode_tagihan: order_id,
+      order_id,
+      amount: gross_amount,
+      midtrans_code: status_code,
+    };
 
     if (params?.transaction_status === "pending") {
       router.replace({
@@ -23,7 +30,7 @@ const StatusScreen = () => {
     } else {
       router.replace({
         pathname: "/(payment)/error",
-        params: { data },
+        params: redirectParams,
       });
     }
   }, [data]);

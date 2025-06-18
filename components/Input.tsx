@@ -6,10 +6,11 @@ interface InputProps extends TextInputProps {
   label?: string;
   icon?: any;
   error?: string;
+  rightcontent?: any;
 }
 
 const Input = forwardRef<TextInput, InputProps>(
-  ({ label, icon, error, ...props }, ref) => {
+  ({ label, icon, error, rightcontent, ...props }, ref) => {
     return (
       <View>
         {label && (
@@ -21,7 +22,7 @@ const Input = forwardRef<TextInput, InputProps>(
               marginBottom: 8,
             }}
           >
-            {icon()}
+            {icon && icon()}
             <Text style={{ color: "#000", fontSize: 16 }}>{label}</Text>
           </View>
         )}
@@ -33,9 +34,12 @@ const Input = forwardRef<TextInput, InputProps>(
             paddingHorizontal: 16,
             backgroundColor: colors.grey,
             paddingVertical: 8,
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
-          <TextInput ref={ref} {...props} style={{ fontSize: 16 }} />
+          <TextInput ref={ref} {...props} style={{ fontSize: 16, flex: 1 }} />
+          {rightcontent && rightcontent()}
         </View>
         {error && <Text style={{ color: "red", fontSize: 12 }}>{error}</Text>}
       </View>

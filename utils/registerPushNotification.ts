@@ -61,7 +61,7 @@ export const registerForPushNotificationsAsync = async () => {
 
   // Kirim token ke backend Laravel
   try {
-    await apiNoToken.post("/store/expo_token", {
+    await apiNoToken.post("/auth/store/expo_token", {
       device_id: deviceId,
       token: token,
     });

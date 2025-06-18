@@ -15,6 +15,7 @@ type NotificationContextType = {
   expoPushToken: string | null;
   lastNotification: Notifications.Notification | null;
   dataPayment: any;
+  countNotifPembayaran: number | null;
 };
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
@@ -29,6 +30,9 @@ export const NotificationProvider = ({
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [lastNotification, setLastNotification] =
     useState<Notifications.Notification | null>(null);
+  const [countNotifPembayaran, setCountNotifPembayaran] = useState<
+    number | null
+  >(null);
   const [dataPayment, setDataPayment] = useState<any>(null);
   const notificationListener = useRef<any>();
   const responseListener = useRef<any>();
@@ -42,24 +46,33 @@ export const NotificationProvider = ({
     // Handle foreground notification
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
+        const configNotif = notification.request.trigger as any;
+        const getChannelId = configNotif.remoteMessage.data.channelId;
         const data = notification.request.content.data;
         if (data) {
           setDataPayment(data);
         }
         setLastNotification(notification);
-        // console.log(" Notifikasi data", notification);
+        if (getChannelId === "notifikasi_pembayaran" && data) {
+          setCountNotifPembayaran(data.total);
+        }
       });
 
     // Handle tapped notification
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        // console.log("User clicked notif:", response.notification);
-        router.push({
-          pathname: "/(payment)/status",
-          params: {
-            data: JSON.stringify(response.notification.request.content.data),
-          },
-        });
+        const configNotif = response.notification.request.trigger as any;
+        const getChannelId = configNotif.remoteMessage.data.channelId;
+        if (!getChannelId) {
+          router.push({
+            pathname: "/(payment)/status",
+            params: {
+              data: JSON.stringify(response.notification.request.content.data),
+            },
+          });
+          return;
+        }
+        console.log("CHANNEL ID NOTIFIKASI CONTEXT: ", getChannelId);
       });
 
     return () => {
@@ -72,7 +85,12 @@ export const NotificationProvider = ({
 
   return (
     <NotificationContext.Provider
-      value={{ expoPushToken, lastNotification, dataPayment }}
+      value={{
+        expoPushToken,
+        lastNotification,
+        dataPayment,
+        countNotifPembayaran,
+      }}
     >
       {children}
     </NotificationContext.Provider>

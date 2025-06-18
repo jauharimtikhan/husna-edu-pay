@@ -1,94 +1,112 @@
-// Base response untuk semua transaksi
-type MidtransBaseResponse = {
-  currency: string;
-  expiry_time?: string;
-  fraud_status: string;
+interface MidtransBaseResponse {
+  transaction_time: string;
   gross_amount: string;
-  merchant_id: string;
   order_id: string;
   payment_type: string;
+  signature_key: string;
   status_code: string;
-  status_message: string;
   transaction_id: string;
-  transaction_status: string;
-  transaction_time: string;
-  settlement_time?: string;
-};
+  transaction_status:
+    | "capture"
+    | "settlement"
+    | "pending"
+    | "deny"
+    | "cancel"
+    | "expire"
+    | "failure"
+    | string;
+  fraud_status?: "accept" | "deny" | "challenge" | string;
+  status_message: string;
+  currency?: string;
+  merchant_id?: string;
+  expiry_time?: string;
+}
 
-// === BANK TRANSFER ===
-export type MidtransBankTransferResponse = MidtransBaseResponse & {
+// Type for bank_transfer (with optional VA or permata)
+interface BankTransferResponse extends MidtransBaseResponse {
   payment_type: "bank_transfer";
-  permata_va_number?: string;
   va_numbers?: {
     bank: string;
     va_number: string;
   }[];
-  bca_va_number?: string;
+  permata_va_number?: string;
+  pdf_url?: string;
+  expiry_time?: string;
+}
+
+// Type for credit_card
+interface CreditCardResponse extends MidtransBaseResponse {
+  payment_type: "credit_card";
+  redirect_url?: string;
+  masked_card?: string;
   bank?: string;
-};
+  approval_code?: string;
+  eci?: string;
+  channel?: string;
+  card_type?: string;
+}
 
-// === ECHANNEL (MANDIRI) ===
-export type MidtransEchannelResponse = MidtransBaseResponse & {
-  payment_type: "echannel";
-  bill_key: string;
-  biller_code: string;
-};
-
-// === QRIS ===
-export type MidtransQrisResponse = MidtransBaseResponse & {
-  payment_type: "qris";
-  actions: {
-    name: string;
-    method: string;
-    url: string;
-  }[];
-};
-
-// === GOPAY ===
-export type MidtransGopayResponse = MidtransBaseResponse & {
+// Type for gopay
+interface GoPayResponse extends MidtransBaseResponse {
   payment_type: "gopay";
-  actions: {
+  actions?: {
     name: string;
     method: string;
     url: string;
   }[];
-};
+  expiry_time?: string;
+}
 
-// === SHOPEEPAY ===
-export type MidtransShopeePayResponse = MidtransBaseResponse & {
+// Type for qris
+interface QrisResponse extends MidtransBaseResponse {
+  payment_type: "qris";
+  actions?: {
+    name: string;
+    method: string;
+    url: string;
+  }[];
+  expiry_time?: string;
+}
+
+interface ShopeepayResponse extends MidtransBaseResponse {
   payment_type: "shopeepay";
-  actions: {
+  actions?: {
     name: string;
     method: string;
     url: string;
   }[];
-};
+  expiry_time?: string;
+}
 
-// === CONVENIENCE STORE (INDOMARET, ALFAMART) ===
-export type MidtransCStoreResponse = MidtransBaseResponse & {
-  payment_type: "cstore";
+interface OtcResponse extends MidtransBaseResponse {
+  store: "indomaret" | "alfamart";
   payment_code: string;
-  store: string; // "indomaret" or "alfamart"
-  merchant_name?: string;
+  payment_type: "cstore";
+  expiry_time?: string;
+}
+export interface MidtransPaymentLinkResponse extends MidtransBaseResponse {
+  payment_type: "payment_link";
+  payment_url: string;
+  expiry_time?: string;
+}
+
+// Union type (add more payment types as needed)
+export type MidtransChargeResponse =
+  | BankTransferResponse
+  | CreditCardResponse
+  | GoPayResponse
+  | QrisResponse
+  | ShopeepayResponse
+  | OtcResponse
+  | MidtransPaymentLinkResponse
+  | MidtransBaseResponse;
+
+export type MidtransErrorResponseType = {
+  data?: {
+    message?: string;
+    midtrans_code?: number;
+    status?: string;
+    transaction_id?: string;
+  };
   message?: string;
 };
-
-// === CREDIT CARD ===
-export type MidtransCreditCardResponse = MidtransBaseResponse & {
-  payment_type: "credit_card";
-  masked_card: string;
-  bank: string;
-  approval_code: string;
-  card_type: string;
-  channel: string;
-};
-
-// === UNION TYPE UNTUK SEMUA ===
-export type MidtransPaymentResponse =
-  | MidtransBankTransferResponse
-  | MidtransEchannelResponse
-  | MidtransQrisResponse
-  | MidtransGopayResponse
-  | MidtransShopeePayResponse
-  | MidtransCStoreResponse
-  | MidtransCreditCardResponse;

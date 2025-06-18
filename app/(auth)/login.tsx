@@ -10,7 +10,7 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Href, router } from "expo-router";
@@ -22,10 +22,14 @@ import { apiNoToken } from "@/utils/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ENV, STORAGE_VAR } from "@/utils/env";
 import * as Device from "expo-device";
+import { Entypo } from "@expo/vector-icons";
+import { registerForPushNotificationsAsync } from "@/utils/registerPushNotification";
 const login = () => {
+  const [togglePass, setTogglePass] = useState(true);
   const initialData = {
-    email: "",
+    username: "",
     password: "",
+    token: "",
   };
   const form = useForm({
     initialData,
@@ -34,34 +38,38 @@ const login = () => {
       const expoToken = await AsyncStorage.getItem(STORAGE_VAR.push_token);
 
       if (expoToken) {
-        await apiNoToken.post("/auth/update_device_id", {
-          email: useFormData.email,
-          device_id: deviceId,
-        });
+        form.setData("token", expoToken);
+      } else {
+        await registerForPushNotificationsAsync();
       }
+      await apiNoToken.post("/auth/update_device_id", {
+        username: useFormData.username,
+        device_id: deviceId,
+      });
 
       const res = await apiNoToken.post("/auth/login", useFormData);
+
       if (res.status === 200) {
         await AsyncStorage.setItem(STORAGE_VAR.token, res.data?.data?.token);
         await AsyncStorage.setItem(
           STORAGE_VAR.user,
-          JSON.stringify(res.data?.data)
+          JSON.stringify(res.data?.data?.user)
         );
         router.replace("/(home)" as Href);
       } else {
-        // console.log(res.data);
+        console.log(res.data);
       }
     },
   });
-
+  useEffect(() => {
+    const initialize = async () => {
+      const expoToken = await AsyncStorage.getItem(STORAGE_VAR.push_token);
+      if (expoToken) form.setData("token", expoToken);
+    };
+    initialize();
+  }, []);
   return (
-    <ImageBackground
-      source={require("@/assets/images/bg.png")}
-      resizeMode="cover"
-      style={{
-        flex: 1,
-      }}
-    >
+    <>
       <StatusBar backgroundColor="transparent" style="light" />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={{ flex: 1 }}>
@@ -78,27 +86,6 @@ const login = () => {
             >
               <View
                 style={{
-                  paddingHorizontal: 16,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => router.canGoBack() && router.back()}
-                >
-                  <Image
-                    source={require("@/assets/images/icons/mdi-light_arrow-left-circle.png")}
-                    resizeMode="contain"
-                    style={{
-                      width: 37,
-                      height: 37,
-                      marginTop: 16,
-                      marginBottom: 16,
-                      tintColor: "#fff",
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
                   justifyContent: "center",
                   alignItems: "center",
                   flex: 1,
@@ -106,76 +93,87 @@ const login = () => {
               >
                 <View
                   style={{
-                    alignSelf: "flex-start",
-                    marginBottom: 27,
                     paddingLeft: 34,
+                    marginTop: 30,
                   }}
                 >
                   <Text
                     style={{
-                      color: "#fff",
+                      color: "#000000",
                       fontSize: 36,
                       fontWeight: "bold",
+                      textAlign: "center",
                     }}
                   >
-                    Login
+                    Selamat Datang
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#000000",
+                      fontSize: 18,
+                      fontWeight: "semibold",
+                      textAlign: "center",
+                    }}
+                  >
+                    Silakan Masuk Dengan Akun Anda
                   </Text>
                 </View>
                 <View
                   style={{
-                    backgroundColor: colors.white,
-                    borderTopLeftRadius: 60,
-                    borderBottomRightRadius: 60,
                     width: "100%",
-                    paddingVertical: 69,
+                    paddingBottom: 69,
                     paddingHorizontal: 30,
-                    gap: 39,
+                    gap: 28,
+                    marginTop: 34,
                   }}
                 >
-                  <View>
-                    <Text>email: user@tes.com</Text>
-                    <Text>pass: user123</Text>
-                  </View>
                   <Input
                     label="Username or email"
                     placeholder="Enter your username or email"
                     style={{
                       height: 40,
                     }}
-                    icon={() => (
-                      <Image
-                        source={require("@/assets/images/icons/user.png")}
-                        resizeMode="contain"
-                        style={{ width: 23, height: 24, tintColor: "#000" }}
-                      />
-                    )}
-                    error={form.errors.email}
-                    onChangeText={(text) => form.setData("email", text)}
-                    value={form.data.email}
-                    ref={(ref) => form.registerInput("email", ref)}
+                    error={form.errors.username}
+                    onChangeText={(text) => form.setData("username", text)}
+                    value={form.data.username}
+                    ref={(ref) => form.registerInput("username", ref)}
                     keyboardType="email-address"
                     returnKeyType="next"
-                    onSubmitEditing={() => form.handleSubmitEditing("email")}
+                    onSubmitEditing={() => form.handleSubmitEditing("username")}
                   />
                   <Input
                     label="Password"
                     placeholder="Enter your password"
-                    icon={() => (
-                      <Image
-                        source={require("@/assets/images/icons/lock.png")}
-                        resizeMode="contain"
-                        style={{ width: 23, height: 24, tintColor: "#000" }}
-                      />
-                    )}
                     error={form.errors.password}
                     value={form.data.password}
                     onChangeText={(text) => form.setData("password", text)}
                     ref={(ref) => form.registerInput("password", ref)}
-                    secureTextEntry={true}
+                    secureTextEntry={togglePass}
                     returnKeyType="done"
                     onSubmitEditing={() => form.submit()}
                     style={{
                       height: 40,
+                    }}
+                    rightcontent={() => {
+                      if (togglePass) {
+                        return (
+                          <Entypo
+                            onPress={() => setTogglePass(false)}
+                            name="eye"
+                            size={24}
+                            color="black"
+                          />
+                        );
+                      } else {
+                        return (
+                          <Entypo
+                            name="eye-with-line"
+                            onPress={() => setTogglePass(true)}
+                            size={24}
+                            color="black"
+                          />
+                        );
+                      }
                     }}
                   />
                   <View
@@ -201,6 +199,13 @@ const login = () => {
                       title="Login"
                       loading={form.processing}
                       onPress={form.submit}
+                      style={{
+                        justifyContent: "center",
+                        borderRadius: 8,
+                        paddingVertical: 16,
+                        paddingHorizontal: 8,
+                        alignItems: "center",
+                      }}
                     />
                   </View>
                 </View>
@@ -209,7 +214,7 @@ const login = () => {
           </KeyboardAvoidingView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-    </ImageBackground>
+    </>
   );
 };
 

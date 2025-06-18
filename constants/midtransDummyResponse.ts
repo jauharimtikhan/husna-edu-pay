@@ -1,3 +1,5 @@
+import { MidtransChargeResponse } from "@/types/midtrans-response";
+
 const BCA = {
   status_code: "201",
   status_message: "Success, Bank Transfer transaction is created",

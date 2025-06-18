@@ -41,15 +41,16 @@ const handleResponseError = async (
 
     switch (status) {
       case 422:
-        //
+        console.log("ERROR 422: ", error);
+
         break;
       case 401:
         if (redirectToLogin) {
           if (!isRedirectingToLogin) {
             isRedirectingToLogin = true;
             await AsyncStorage.clear();
-            router.replace("/(auth)/login" as Href);
           }
+          router.replace("/(auth)/login" as Href);
           return;
         } else {
           //
@@ -65,13 +66,20 @@ const handleResponseError = async (
         //
         break;
       case 500:
+        console.log("AXIOS ERROR 500:", error);
+        break;
+
+      case 406:
+        console.log("AXIOS ERROR 406:", error);
+        break;
+
       default:
         //
         break;
     }
   } else {
     // Network or unknown error
-    console.error("NON-AXIOS ERROR:", error);
+    console.log("NON-AXIOS ERROR:", error);
     //
   }
 
@@ -87,6 +95,7 @@ api.interceptors.request.use(
         Authorization: `Bearer ${token}`,
       };
     }
+
     return config;
   },
   (error: AxiosError) => Promise.reject(error)

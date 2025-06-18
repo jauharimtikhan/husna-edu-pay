@@ -42,7 +42,7 @@ export default function Index() {
   }, [permission, isInternetReachable]);
 
   if (!isChecking) {
-    return <Redirect href={isLoggedIn ? "/(home)" : "/(auth)/login"} />;
+    return <Redirect href={isLoggedIn ? "/(main)/(home)" : "/(auth)/login"} />;
   }
   if (!isInternetReachable && isInternetReachable !== undefined) {
     // console.log("No internet connection");
@@ -87,27 +87,5 @@ export default function Index() {
     );
   }
 
-  return (
-    <ImageBackground
-      source={require("@/assets/images/bg.png")}
-      resizeMode="cover"
-      style={{
-        flex: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <StatusBar style="light" backgroundColor="transparent" />
-      <SafeAreaView>
-        <View>
-          <Image
-            source={require("@/assets/images/logo-circle.png")}
-            resizeMode="contain"
-            style={{ width: 200, height: 200 }}
-          />
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
-  );
+  return;
 }

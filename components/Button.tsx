@@ -2,34 +2,51 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
   View,
+  Pressable,
+  PressableProps,
 } from "react-native";
-import React from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import { colors } from "@/constants/color";
-interface ButtonProps extends TouchableOpacityProps {
+import React, { useState } from "react";
+import { colors, newColors } from "@/constants/color";
+
+interface ButtonProps extends PressableProps {
   title?: string;
   loading?: boolean;
+  rightcontent?: React.ReactNode;
 }
-const Button = ({ title = "Button", loading, ...props }: ButtonProps) => {
+
+const Button = ({
+  title = "Button",
+  loading,
+  rightcontent,
+  ...props
+}: ButtonProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <TouchableOpacity {...props} style={[styles.buttonContainer, props.style]}>
-      <LinearGradient
-        colors={["#105873", "#02FDB0", "#95FFFA"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 5 }}
-        locations={[0, 0.5, 1]}
-        style={styles.button}
-      >
-        {loading ? (
-          <ActivityIndicator size={"small"} color={colors.white} />
-        ) : (
+    <Pressable
+      {...props}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      style={({ pressed }) => {
+        const dynamicStyles = [
+          styles.buttonContainer,
+          isHovered ? styles.hovered : null,
+          pressed ? styles.pressed : null,
+          props.style as any,
+        ];
+        return dynamicStyles;
+      }}
+    >
+      {loading ? (
+        <ActivityIndicator size={"small"} color={colors.white} />
+      ) : (
+        <View style={styles.content}>
           <Text style={styles.text}>{title}</Text>
-        )}
-      </LinearGradient>
-    </TouchableOpacity>
+          {rightcontent}
+        </View>
+      )}
+    </Pressable>
   );
 };
 
@@ -37,23 +54,36 @@ export default Button;
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderRadius: 50,
+    backgroundColor: newColors[700],
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 6,
+
+    // Shadow
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
+  hovered: {
+    backgroundColor: newColors[800],
+  },
+  pressed: {
+    opacity: 0.8,
   },
   text: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: "900",
+    fontSize: 18,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
 });

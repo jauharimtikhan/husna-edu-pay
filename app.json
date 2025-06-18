@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "husnaedupay",
-    "deepLinks": ["husnaedupay://callback-gopay"],
+    "deepLinks": ["husnaedupay://callback"],
+    "deepLinking": true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -24,7 +25,17 @@
       "package": "com.husnaedupay",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "permissions": ["android.permission.READ_PHONE_STATE"]
+      "permissions": ["android.permission.READ_PHONE_STATE"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "husnaedupay",
+            "host": "callback"
+          },
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -55,6 +66,22 @@
         "expo-dev-client",
         {
           "launchMode": "most-recent"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Izinkan Husna Edu Pay mengakses galeri anda.",
+          "savePhotosPermission": "Izinkan Husna Edu Pay menyimpan gambar.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "Izinkan Husna Edu Pay mengakses Kamera.",
+          "microphonePermission": "Izinkan Husna Edu Pay mengakses Mikrofon."
         }
       ]
     ],
