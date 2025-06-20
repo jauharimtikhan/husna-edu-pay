@@ -1,6 +1,6 @@
 export const ENV = {
-  API_BASE_URL: "https://local.jtech.my.id/api/v1",
-  ASSET_BASE_URL: "https://local.jtech.my.id/storage",
+  API_BASE_URL: "https://panel.al-husna.my.id/api/v1",
+  ASSET_BASE_URL: "https://panel.al-husna.my.id/storage",
 };
 
 export const STORAGE_VAR = {
