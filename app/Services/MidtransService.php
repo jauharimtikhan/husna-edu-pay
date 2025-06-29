@@ -436,7 +436,7 @@ class MidtransService
 
       if (empty($kodeTagihanList)) {
         Log::warning('No valid kode_tagihan extracted from order_id', ['order_id' => $midtransResponse['order_id']]);
-        return response()->json(['message' => 'Invalid order_id format'], 400);
+        return response()->json(['message' => 'Invalid order_id format'], 200);
       }
       // Ambil semua tagihan
       $tagihans = Tagihan::with('user')->whereIn('kode_tagihan', $kodeTagihanList)->get();
@@ -489,15 +489,6 @@ class MidtransService
             $push->sendSingle($token->token, $notification['title'], $notification['body'], $notification['data']);
           }
         }
-        $notification = [
-          'body' => "Notifiaksi update foreground",
-          'data' => json_encode([
-            'channelId' => 'notifikasi_pembayaran',
-            'total' => $notif->count()
-          ]),
-          'title' => "Update Notifikasi foreground"
-        ];
-        $push->sendSingle($token->token, $notification['title'], $notification['body'], $notification['data'], 'notifikasi_pembayaran');
       }
 
       Log::info('Webhook handled successfully.', [
@@ -516,7 +507,7 @@ class MidtransService
     }
   }
 
-  protected function extractSystemOrderId(string $midtransOrderId): array
+  public function extractSystemOrderId(string $midtransOrderId): array
   {
     $midtransOrderId = trim($midtransOrderId);
 
@@ -536,10 +527,15 @@ class MidtransService
       ? explode($delimiter, $midtransOrderId)
       : [$midtransOrderId];
 
-    // Validasi format tagihan
     $validKodeTagihans = [];
+
     foreach ($rawKodeTagihans as $kode) {
       $kode = trim($kode);
+
+      // Potong trailing suffix jika formatnya seperti: INV-868ZR-xxxxxxxxxxxx
+      if (preg_match('/^((INV-\d{8}-[A-Z0-9]{6})|(INV-\d{3}[A-Z]{2})|(INV-[A-Z0-9]{5,6}))-\d+$/', $kode, $matches)) {
+        $kode = $matches[1]; // Ambil bagian sebelum -xxxxxxxxxx
+      }
 
       if ($this->isValidInvoiceFormat($kode)) {
         $validKodeTagihans[] = $kode;
@@ -549,14 +545,16 @@ class MidtransService
     return $validKodeTagihans;
   }
 
-  protected function isValidInvoiceFormat(string $invoiceId): bool
+  public function isValidInvoiceFormat(string $invoiceId): bool
   {
     $invoiceId = trim($invoiceId);
 
-    return  preg_match('/^INV-\d{3}[A-Z]{2}$/', $invoiceId) ||
-      preg_match('/^INV-\d{8}-[A-Z0-9]{6}$/', $invoiceId) ||
-      preg_match('/^INV-\d{5,6}$/', $invoiceId);
+    return preg_match('/^INV-\d{3}[A-Z]{2}$/', $invoiceId) ||                // INV-568EP
+      preg_match('/^INV-\d{8}-[A-Z0-9]{6}$/', $invoiceId) ||            // INV-20250615-5G3TP2
+      preg_match('/^INV-[A-Z0-9]{5,6}$/', $invoiceId);                  // INV-868ZR
   }
+
+
 
   public function generateTransactionData($request): array
   {

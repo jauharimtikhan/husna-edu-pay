@@ -143,3 +143,6 @@ Route::get('pembayaran-tagihan/callback', function () {
         'data' => $midtransResponse
     ]);
 })->name('pembayaran.callback');
+
+
+Route::post('/_test', [TransaksiController::class, 'test'])->middleware('web');

@@ -14,12 +14,16 @@ export default function AuthenticatedLayout({
     title,
 }: AuthtenticatedLayoutProps) {
     return (
-        <ThemeProvider defaultTheme="system">
+        <ThemeProvider defaultTheme="system" storageKey="husna-edupay-theme">
             <ToasterSonner />
             <SidebarProvider>
                 <Head title={title || "Admin Panel"} />
                 <AppSidebar variant="inset" />
-                <SidebarInset>{children}</SidebarInset>
+
+                <SidebarInset>
+                    <SiteHeader title={title} />
+                    {children}
+                </SidebarInset>
             </SidebarProvider>
         </ThemeProvider>
     );

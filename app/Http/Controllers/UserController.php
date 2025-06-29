@@ -34,13 +34,15 @@ class UserController extends Controller
         try {
             User::create([
                 'username' => $request->nama_pengguna,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'email' => $request->nama_pengguna . "@al-husna.my.id"
             ]);
             $this->alert([
                 'type' => 'success',
                 'message' => "Berhasil membuat pengguna baru!"
             ]);
         } catch (\Exception $th) {
+            dd($th->getMessage());
             $this->alert([
                 'type' => 'error',
                 'message' => "Gagal membuat pengguna baru!"

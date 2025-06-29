@@ -36,7 +36,7 @@ export default function UpdateUserIndex({
         }
     }, [user]);
     return (
-        <Modal open={open} onClose={onClose} title="Buat Pengguna Baru">
+        <Modal open={open} onClose={onClose} title="Update Pengguna">
             <form onSubmit={handleSubmit}>
                 <InputForm
                     label="Nama Pengguna"
@@ -50,7 +50,7 @@ export default function UpdateUserIndex({
                     readOnly
                     value={data.device_id}
                     type="text"
-                    error="Jangan diupdate bre biar dari device real user aja!"
+                    placeholder="Otomatis terisi dari device id user"
                 />
                 <div className="flex justify-end">
                     <ButtonForm

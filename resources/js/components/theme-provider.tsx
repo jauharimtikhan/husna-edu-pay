@@ -29,10 +29,10 @@ export function ThemeProvider({
     const [theme, setTheme] = useState<Theme>(() => defaultTheme);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const stored = localStorage.getItem(storageKey);
-            if (stored) setTheme("system");
-        }
+        // if (typeof window !== "undefined") {
+        //     const stored = localStorage.getItem(storageKey);
+        //     if (stored) setTheme("system");
+        // }
         const root = window.document.documentElement;
 
         root.classList.remove("light", "dark");

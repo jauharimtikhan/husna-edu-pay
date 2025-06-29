@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->longText('kebijakan_privasi')->nullable();
             $table->longText('bantuan')->nullable();
+            $table->longText('syarat_ketentuan')->nullable();
             $table->timestamps();
         });
     }

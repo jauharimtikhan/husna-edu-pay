@@ -1,5 +1,6 @@
-import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { ChartBarInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
+import PaymentMethodPieChart from "@/components/PaymentMethodChart";
 import { SectionCards } from "@/components/section-cards";
 import UseToast from "@/Hooks/UseToast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -13,15 +14,20 @@ interface HomeIndexProps extends PageProps {
     totalPendapatan: number;
     totalPengguna: number;
     pendapatanPerBulan: PendapatanData[];
+    payment_method_stat: {
+        name: string;
+        value: number;
+        percentage: string;
+    }[];
 }
 export default function Index({
     alert,
     totalPendapatan,
     totalPengguna,
     pendapatanPerBulan,
+    payment_method_stat,
 }: HomeIndexProps) {
     UseToast(alert);
-    console.log(pendapatanPerBulan);
 
     return (
         <AuthenticatedLayout>
@@ -32,8 +38,10 @@ export default function Index({
                             totalPendapatan={totalPendapatan}
                             totalPengguna={totalPengguna}
                         />
-                        <div className="px-4 lg:px-6">
-                            <ChartAreaInteractive data={pendapatanPerBulan} />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4">
+                            <ChartBarInteractive data={pendapatanPerBulan} />
+
+                            <PaymentMethodPieChart data={payment_method_stat} />
                         </div>
                     </div>
                 </div>

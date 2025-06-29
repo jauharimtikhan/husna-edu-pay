@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\Midtrans;
 use App\Models\Tagihan;
 use App\Models\Transaksi;
+use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -56,5 +57,14 @@ class TransaksiController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+    public function test(Request $request)
+    {
+        $service = new MidtransService();
+
+        return response()->json([
+            'success' => true,
+            'result' => $service->extractSystemOrderId($request->order_id)
+        ], 200);
     }
 }

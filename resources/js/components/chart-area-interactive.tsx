@@ -1,22 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    ResponsiveContainer,
+    XAxis,
+    YAxis,
+    Cell,
+} from "recharts";
 
 import { useIsMobile } from "@/Hooks/use-mobile";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartTooltip } from "@/components/ui/chart";
 import {
     Select,
     SelectContent,
@@ -24,84 +21,134 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { formatRupiah } from "@/lib/utils";
+
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+
 type PendapatanData = {
     bulan: string;
     total: number;
 };
 
-export function ChartAreaInteractive({ data }: { data: PendapatanData[] }) {
+export function ChartBarInteractive({ data }: { data: PendapatanData[] }) {
     const isMobile = useIsMobile();
     const [timeRange, setTimeRange] = React.useState("30d");
+
     const formatted = data.map((item) => ({
-        date: item.bulan + "-01", // supaya cocok dengan format date di XAxis
+        bulan: item.bulan,
         total: item.total,
     }));
+
     React.useEffect(() => {
         if (isMobile) {
             setTimeRange("7d");
         }
     }, [isMobile]);
 
-    const filteredData = formatted.filter((item) => {
-        const date = new Date(item.date);
-        const referenceDate = new Date("2024-06-30");
-        let daysToSubtract = 90;
-        if (timeRange === "30d") {
-            daysToSubtract = 30;
-        } else if (timeRange === "7d") {
-            daysToSubtract = 7;
-        }
-        const startDate = new Date(referenceDate);
-        startDate.setDate(startDate.getDate() - daysToSubtract);
-        return date >= startDate;
+    const filteredData = formatted.filter((_, index) => {
+        if (timeRange === "30d") return index < 12; // 12 bulan terakhir
+        if (timeRange === "7d") return index < 6; // 6 bulan terakhir
+        return index < 24; // Semua data (maks 24 bulan)
     });
+
+    // Warna gradient untuk bar chart
+    const getBarColor = (value: number) => {
+        const maxValue = Math.max(...filteredData.map((item) => item.total), 1); // Hindari pembagi 0
+        const ratio = value / maxValue;
+        const hue = 200 + Math.floor(60 * ratio); // Biru ke hijau (200-260)
+        return `hsl(${hue}, 70%, 50%)`;
+    };
+
+    // Custom tooltip
+    const CustomTooltip = ({ active, payload }: any) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-white p-3 shadow-md rounded-md border border-gray-200">
+                    <p className="font-bold text-gray-800">
+                        {format(payload[0].payload.bulan, "MMMM yyyy", {
+                            locale: id,
+                        })}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                        Total: {formatRupiah().format(payload[0].value)}
+                    </p>
+                </div>
+            );
+        }
+        return null;
+    };
+
+    // Format label untuk sumbu X (mobile vs desktop)
+    const formatXAxisLabel = (value: string) => {
+        if (isMobile) {
+            // Jika format "MMM-YYYY", ambil bulan saja? Tergantung data
+            // Asumsi data bulan dalam format "Jan-2024"
+            return value.split("-")[0]; // Hanya bulan di mobile
+        }
+        return value;
+    };
 
     return (
         <Card className="@container/card">
             <CardHeader className="relative">
                 <CardTitle>Total Pendapatan Per Bulan</CardTitle>
+                <div className="absolute top-6 right-6">
+                    <Select value={timeRange} onValueChange={setTimeRange}>
+                        <SelectTrigger className="w-[100px]">
+                            <SelectValue placeholder="Rentang" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="7d">6 Bulan</SelectItem>
+                            <SelectItem value="30d">12 Bulan</SelectItem>
+                            <SelectItem value="all">Semua</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </CardHeader>
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-                <div className="aspect-auto h-[250px] w-full">
-                    <AreaChart
-                        width={isMobile ? 350 : 800}
-                        height={300}
-                        data={formatted}
-                    >
-                        <defs>
-                            <linearGradient
-                                id="colorTotal"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={filteredData}
+                            margin={{
+                                top: 20,
+                                right: 30,
+                                left: 20,
+                                bottom: isMobile ? 60 : 50, // Perbesar bottom margin untuk label yang diputar
+                            }}
+                        >
+                            <XAxis
+                                dataKey="bulan"
+                                angle={isMobile ? -45 : 0}
+                                textAnchor={isMobile ? "end" : "middle"}
+                                height={isMobile ? 80 : 40} // Tinggi lebih untuk mobile karena rotasi
+                                tick={{ fontSize: 12 }}
+                                tickFormatter={formatXAxisLabel}
+                            />
+                            <YAxis
+                                tickFormatter={(value) =>
+                                    formatRupiah().format(value).trim()
+                                }
+                                width={isMobile ? 60 : 80}
+                                tick={{ fontSize: 12 }}
+                            />
+                            <ChartTooltip content={<CustomTooltip />} />
+                            <Bar
+                                dataKey="total"
+                                name="Total Pendapatan"
+                                radius={[4, 4, 0, 0]}
                             >
-                                <stop
-                                    offset="5%"
-                                    stopColor="hsl(var(--chart-1))"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="hsl(var(--chart-1))"
-                                    stopOpacity={0}
-                                />
-                            </linearGradient>
-                        </defs>
-
-                        <XAxis dataKey="date" />
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <ChartTooltip />
-                        <Area
-                            type="monotone"
-                            dataKey="total"
-                            stroke="hsl(var(--chart-1))"
-                            fillOpacity={1}
-                            fill="url(#colorTotal)"
-                        />
-                    </AreaChart>
+                                {/* PERBAIKAN DI SINI: Gunakan Cell untuk warna */}
+                                {filteredData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={getBarColor(entry.total)}
+                                    />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </CardContent>
         </Card>
