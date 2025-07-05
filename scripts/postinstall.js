@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const isDevClient = process.env.EAS_BUILD_PROFILE !== "production";
+const isDevClient = process.env.EAS_BUILD_PROFILE !== "preview";
 
 if (!isDevClient) {
   console.log("🚫 Removing expo-dev-client for production build...");

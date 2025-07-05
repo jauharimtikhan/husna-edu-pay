@@ -8,7 +8,13 @@ import {
   StatusBar as RNStatusBar,
   Dimensions,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, newColors } from "@/constants/color";
 import { router, useLocalSearchParams } from "expo-router";
@@ -29,21 +35,12 @@ import numberFormat from "@/utils/numberFormat";
 import Table, { TableColumn } from "@/components/Table";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import { StatusBar } from "expo-status-bar";
+import { Feather } from "@expo/vector-icons";
 
 const MIDTRANS_ERROR_CODES = {
   PAYMENT_FAILED: 406,
   SERVER_ERROR: 500,
 };
-const columns: TableColumn[] = [
-  { title: "Nama Tagihan", dataIndex: "nama_tagihan" },
-  { title: "Kode Tagihan", dataIndex: "kode_tagihan" },
-  {
-    title: "Nominal",
-    dataIndex: "nominal",
-    render: (value) => numberFormat(value),
-    align: "right",
-  },
-];
 
 export default function DetailMultiplePembayaran() {
   const { data_tagihans } = useLocalSearchParams();
@@ -197,6 +194,48 @@ export default function DetailMultiplePembayaran() {
     return;
   };
 
+  const handleDeleteItem = (id: string) => {
+    if (!dataCharge) return;
+
+    const newData = dataCharge.data.filter((item) => item.kode_tagihan !== id);
+    const newTotal = newData.reduce((sum, item) => sum + item.nominal, 0);
+
+    setDataCharge({
+      ...dataCharge,
+      data: newData,
+      total_tagihan: newTotal,
+    });
+  };
+
+  const cols = useMemo<TableColumn<PayNowType>[]>(() => {
+    return [
+      { title: "Nama Tagihan", width: 80, dataIndex: "nama_tagihan" },
+      { title: "Kode Tagihan", width: 80, dataIndex: "kode_tagihan" },
+      {
+        title: "Nominal",
+        dataIndex: "nominal",
+        render: (rowData) => numberFormat(rowData),
+        align: "right",
+      },
+      {
+        title: "",
+        dataIndex: "kode_tagihan",
+        cellStyle: {
+          width: 50,
+        },
+        width: 50,
+        render: (value) => {
+          return (
+            <TouchableOpacity onPress={() => handleDeleteItem(value)}>
+              <Feather name="trash-2" size={20} color={colors.danger} />
+            </TouchableOpacity>
+          );
+        },
+        align: "right",
+      },
+    ];
+  }, [dataCharge, handleDeleteItem]);
+
   useEffect(() => {
     if (!data_tagihans) {
       ToastAndroid.show("Data Tagihan Tidak Valid!", ToastAndroid.SHORT);
@@ -240,8 +279,9 @@ export default function DetailMultiplePembayaran() {
               <Table
                 containerStyle={{
                   marginHorizontal: "auto",
+                  paddingHorizontal: 12,
                 }}
-                columns={columns}
+                columns={cols}
                 data={dataCharge.data}
               />
             )}

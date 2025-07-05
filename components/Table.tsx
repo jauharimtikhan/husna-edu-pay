@@ -1,4 +1,5 @@
 // components/Table.tsx
+import { PayNowType } from "@/types/apiResponse";
 import React from "react";
 import {
   View,
@@ -9,7 +10,7 @@ import {
   TextStyle,
 } from "react-native";
 
-export interface TableColumn {
+export interface TableColumn<TData> {
   title: string;
   dataIndex: string;
   width?: number;
@@ -18,13 +19,13 @@ export interface TableColumn {
   cellStyle?: TextStyle;
   render?: (
     value: any,
-    rowData?: Record<string, any>,
+    rowData?: Record<string, TData>,
     rowIndex?: number
   ) => React.ReactNode;
 }
 
-export interface TableProps {
-  columns: TableColumn[];
+export interface TableProps<TData> {
+  columns: TableColumn<TData>[];
   data: Record<string, any>[];
   containerStyle?: ViewStyle;
   headerStyle?: ViewStyle;
@@ -32,7 +33,7 @@ export interface TableProps {
   showBorder?: boolean;
 }
 
-const Table: React.FC<TableProps> = ({
+const Table: React.FC<TableProps<PayNowType>> = ({
   columns,
   data,
   containerStyle,
