@@ -17,15 +17,16 @@ export default function UpdateUserIndex({
     onClose,
     user,
 }: UpdateUserIndexProps) {
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, put, errors, processing } = useForm({
         nama_pengguna: "",
         device_id: "",
+        password: "",
     });
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (user) {
-            post(route("user.update", user.id));
+            put(route("user.update", user.id));
         }
     };
 
@@ -51,6 +52,14 @@ export default function UpdateUserIndex({
                     value={data.device_id}
                     type="text"
                     placeholder="Otomatis terisi dari device id user"
+                />
+
+                <InputForm
+                    label="Password"
+                    value={data.password}
+                    type="text"
+                    onChange={(e) => setData("password", e.target.value)}
+                    placeholder="Masukan Password Baru"
                 />
                 <div className="flex justify-end">
                     <ButtonForm

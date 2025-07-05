@@ -55,9 +55,10 @@ class UserController extends Controller
         try {
             $user = User::find($id);
             $user->username = $request->nama_pengguna;
+            $user->password = $request->password;
             $user->save();
             $this->alert([
-                'type' => 'sucess',
+                'type' => 'success',
                 'message' => "Berhasil mengupdate data pengguna!"
             ]);
         } catch (\Exception $th) {
