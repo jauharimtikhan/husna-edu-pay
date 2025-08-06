@@ -9,12 +9,13 @@ import {
   ScrollView,
   Keyboard,
   Platform,
+  ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Href, router } from "expo-router";
-import { colors } from "@/constants/color";
+import { colors, newColors } from "@/constants/color";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { useForm } from "@/hooks/useForm";
@@ -34,6 +35,11 @@ const login = () => {
   const form = useForm({
     initialData,
     onSubmit: async (useFormData) => {
+      if (useFormData.username === "" && useFormData.password === "") {
+        form.setError("password", "Password tidak boleh kosong");
+        form.setError("username", "Username tidak boleh kosong");
+        return;
+      }
       const deviceId = `${Device.osBuildId}-${Device.deviceName}`;
       const expoToken = await AsyncStorage.getItem(STORAGE_VAR.push_token);
 
@@ -57,7 +63,11 @@ const login = () => {
         );
         router.replace("/(home)" as Href);
       } else {
-        console.log(res.data);
+        if (res.status === 401) {
+          ToastAndroid.show(res.data.data.message, ToastAndroid.SHORT);
+          return;
+        }
+        // console.log(res.data);
       }
     },
   });
@@ -68,9 +78,10 @@ const login = () => {
     };
     initialize();
   }, []);
+
   return (
     <>
-      <StatusBar backgroundColor="transparent" style="light" />
+      {/* <StatusBar backgroundColor={newColors[600]} style="dark" /> */}
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={{ flex: 1 }}>
           <KeyboardAvoidingView
@@ -181,7 +192,9 @@ const login = () => {
                       marginTop: -20,
                     }}
                   >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => router.push("/(auth)/forgot")}
+                    >
                       <Text
                         style={{
                           color: "#000",
@@ -190,7 +203,7 @@ const login = () => {
                           fontWeight: "semibold",
                         }}
                       >
-                        Forgot password?
+                        Lupa password?
                       </Text>
                     </TouchableOpacity>
                   </View>

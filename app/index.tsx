@@ -87,5 +87,5 @@ export default function Index() {
     );
   }
 
-  return;
+  return null;
 }

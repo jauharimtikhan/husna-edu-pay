@@ -306,7 +306,7 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
           </View>
           <View
             style={{
-              marginTop: SCREEN_HEIGHT * 0.29,
+              marginTop: SCREEN_HEIGHT / 6,
             }}
           >
             <TouchableOpacity
