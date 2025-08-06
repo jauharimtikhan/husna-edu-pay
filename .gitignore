@@ -24,3 +24,9 @@ Homestead.yaml
 npm-debug.log
 Thumbs.db
 yarn-error.log
+id_rsa_github
+id_rsa_github.pub
+*.sql
+*.zip
+*.rar
+/public/build.zip

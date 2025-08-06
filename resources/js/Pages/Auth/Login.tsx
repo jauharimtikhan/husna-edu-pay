@@ -33,7 +33,7 @@ export default function Login({ alert }: PageProps) {
             <div className={cn("flex flex-col gap-6 ")}>
                 <Card className="w-[400px]">
                     <CardHeader>
-                        <CardTitle>Login Ke Husna Edu Pay</CardTitle>
+                        <CardTitle>Login Ke Al-Husna Edu Pay</CardTitle>
                         <CardDescription>
                             Masukan informasi akun anda dibawah
                         </CardDescription>

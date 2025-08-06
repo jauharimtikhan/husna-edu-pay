@@ -93,6 +93,8 @@ class AuthController extends Controller
         return self::toJson([], "Berhasil logout", 200);
     }
 
+
+
     public function updateProfile(Request $request)
     {
         $request->validate([
@@ -107,33 +109,46 @@ class AuthController extends Controller
                 ?? User::firstWhere('username', $request->email);
 
             if (!$user) {
+                Log::warning("Update Profile: User tidak ditemukan dengan email/username: {$request->email}");
                 return response()->json([
                     'message' => 'User tidak ditemukan.',
                 ], 404);
             }
 
+            // Proses avatar
             if ($request->hasFile('avatar')) {
                 $avatar = $request->file('avatar');
                 $fileName = Str::random(16) . '-' . Str::uuid() . '.' . $avatar->getClientOriginalExtension();
                 $filePath = "avatar/$fileName";
-                if ($user->avatar && Storage::exists(str_replace('storage/', 'public/', $user->avatar))) {
-                    Storage::delete(str_replace('storage/', 'public/', $user->avatar));
+
+                // Hapus avatar lama
+                $oldAvatarPath = str_replace('storage/', '', $user->avatar);
+                if ($user->avatar && Storage::disk('public')->exists($oldAvatarPath)) {
+                    Storage::disk('public')->delete($oldAvatarPath);
+                    Log::info("Update Profile: Avatar lama dihapus untuk user ID {$user->id}");
                 }
 
-                $avatar->storeAs('avatar', $fileName); // stored in storage/app/public/avatar
-                $user->avatar = "storage/avatar/$fileName"; // accessible via public/storage symlink
+                // Simpan avatar baru
+                $avatar->storeAs('avatar', $fileName, 'public');
+                $user->avatar = "storage/avatar/$fileName";
+                Log::info("Update Profile: Avatar baru disimpan untuk user ID {$user->id} di path $filePath");
             }
 
+            // Update data user
             $user->nama_lengkap = $request->nama_lengkap;
             $user->alamat = $request->alamat;
             $user->save();
+
+            Log::info("Update Profile: Data profil berhasil diupdate untuk user ID {$user->id}");
 
             return response()->json([
                 'message' => 'Berhasil mengupdate profile user',
                 'data'    => $user,
             ], 200);
         } catch (\Throwable $e) {
-            Log::error("Gagal update profil: " . $e->getMessage());
+            Log::error("Gagal update profil user: " . $e->getMessage(), [
+                'request' => $request->all(),
+            ]);
 
             return response()->json([
                 'message' => 'Terjadi kesalahan saat mengupdate profil',
@@ -141,6 +156,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
 
     public function updatePassword(Request $request)
     {

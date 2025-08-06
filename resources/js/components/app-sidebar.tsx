@@ -102,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             >
                                 <Link href={route("home.index")}>
                                     <span className="text-base font-semibold">
-                                        Husna Edu Pay
+                                        Al-Husna Edu Pay
                                     </span>
                                 </Link>
                             </SidebarMenuButton>

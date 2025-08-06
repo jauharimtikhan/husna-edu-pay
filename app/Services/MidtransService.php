@@ -481,8 +481,9 @@ class MidtransService
 
         if ($midtransResponse['transaction_status'] !== 'pending' && $isCheckStatus === false) {
           if ($token) {
+            $statusTransaksi = $this->translateStatusTransaksi($midtransResponse['transaction_status']);
             $notification = [
-              'body' => "Status Pembayaran Anda {$midtransResponse['transaction_status']}",
+              'body' => "Status Pembayaran Anda $statusTransaksi",
               'data' => json_encode($midtransResponse),
               'title' => "Pembayaran Tagihan {$tagihan->nama_tagihan}"
             ];
@@ -728,5 +729,37 @@ class MidtransService
         $response->gross_amount .
         $serverKey
     );
+  }
+
+  protected function translateStatusTransaksi(string $status): string
+  {
+    switch (strtolower($status)) {
+      case 'pending':
+        return 'Menunggu Pembayaran';
+      case 'authorize':
+        return 'Menunggu Otorisasi';
+      case 'failed':
+        return 'Transaksi Gagal';
+      case 'capture':
+        return 'Perlu Dibayar';
+      case 'settlement':
+        return 'Selesai';
+      case 'deny':
+        return 'Pembayaran Ditolak';
+      case 'cancel':
+        return 'Transaksi Dibatalkan';
+      case 'refund':
+        return 'Dana Dikembalikan';
+      case 'partial_refund':
+        return 'Sebagian Dana Dikembalikan';
+      case 'partial_chargeback':
+        return 'Sebagian Dana Ditarik Kembali';
+      case 'expire':
+        return 'Transaksi Kedaluwarsa';
+      case 'failure':
+        return 'Terjadi Kegagalan Transaksi';
+      default:
+        return 'Status Tidak Dikenal';
+    }
   }
 }
