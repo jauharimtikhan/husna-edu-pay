@@ -130,11 +130,11 @@ const Index = () => {
               style={{
                 fontFamily: "poppins",
                 fontSize: 24,
-                fontWeight: "900",
+                fontWeight: "700",
                 color: colors.white,
               }}
             >
-              HUSNA EDUPAY
+              AL-HUSNA EDU PAY
             </Text>
             <Text
               style={{
